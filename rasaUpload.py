@@ -10,10 +10,14 @@ for line in f:
 f.close()
 
 # Configure the below URL with the route to your rasa-x api/auth
-url = 'https://<rasa-x route>/api/auth'
+import os
+rasa_url = os.getenv('RASA_URL', 'https://<rasa-x route>')
+url = f'{rasa_url}/api/auth'
 headers = {'Content-Type': 'application/json', 'cache-control': 'no-cache'}
 # Configure the below payload to your rasa-x username and password
-payload = '{"username": "me", "password": "rasaxpassword"}'
+rasa_username = os.getenv('RASA_USERNAME', 'me')
+rasa_password = os.getenv('RASA_PASSWORD', 'rasaxpassword')
+payload = f'{{"username": "{rasa_username}", "password": "{rasa_password}"}}'
 
 r = requests.post(url, data=payload, headers=headers, verify=False)
 binary = r.content
@@ -21,7 +25,7 @@ output = json.loads(binary)
 auth = output['access_token']
 print(auth)
 
-url = "https://<rasa-x route>/api/projects/default/models/" + x + "/tags/production"
+url = f"{rasa_url}/api/projects/default/models/{x}/tags/production"
 
 payload = ""
 headers = {
