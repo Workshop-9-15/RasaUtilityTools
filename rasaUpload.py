@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 
 f = open("modelname.txt", "r")
 x = ""
@@ -13,9 +14,11 @@ f.close()
 url = 'https://<rasa-x route>/api/auth'
 headers = {'Content-Type': 'application/json', 'cache-control': 'no-cache'}
 # Configure the below payload to your rasa-x username and password
-payload = '{"username": "me", "password": "rasaxpassword"}'
+username = os.getenv('RASA_USERNAME', 'me')
+password = os.getenv('RASA_PASSWORD', 'rasaxpassword')
+payload = f'{{"username": "{username}", "password": "{password}"}}'
 
-r = requests.post(url, data=payload, headers=headers, verify=False)
+r = requests.post(url, data=payload, headers=headers, timeout=30)
 binary = r.content
 output = json.loads(binary)
 auth = output['access_token']
@@ -36,7 +39,7 @@ f.close()
 
 print('Saved Auth File')
 
-response = requests.request("PUT", url, data=payload, headers=headers, verify=False)
+response = requests.request("PUT", url, data=payload, headers=headers, timeout=30)
 
  
 print(response.text)
