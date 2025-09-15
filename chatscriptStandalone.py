@@ -5,20 +5,22 @@ import os
 
 line_indexes = []
 
+DOMAIN_FILE = "domain.yml"
+
 prompt = "Are you working in a Rasa init project?"
 def rasainit(question):
     reply = str(input(question+' (y/n): ')).lower().strip()
     print(reply)
-    if reply[0] == 'y':
+    if len(reply) > 0 and reply[0] == 'y':
         return True
-    if reply[0] == 'n':
+    if len(reply) > 0 and reply[0] == 'n':
         return False
     else:
         return rasainit("Please enter yes or now: ")
 
 if rasainit(prompt) == True:
   print("Rasa init")
-  with open("domain.yml", "r+") as myfile: # Working to modify specific portions 
+  with open(DOMAIN_FILE, "r+") as myfile: # Working to modify specific portions 
     contents = myfile.readlines()
     lines = []
     for i, line2 in enumerate(contents):
@@ -57,7 +59,7 @@ with open("newfaq.md") as file_in:
             myfile.write("\n" + "## intent:" + chatintent.replace(" ", "_"))
             myfile.write("- " + chatquestion) # This is working as expected, probably appending to the row below the latest
 
-        with open("domain.yml", "r+") as myfile: # Working to modify specific portions
+        with open(DOMAIN_FILE, "r+") as myfile: # Working to modify specific portions
           contents = myfile.readlines()
           for i, line2 in enumerate(contents):
             if "entities:" in line2 and "_entities:" not in line2 and chatintent not in contents[i - 1]:
@@ -82,7 +84,7 @@ with open("newfaq.md") as file_in:
             myfile.write("\n" + answer2.rstrip())
 
        
-        with open("domain.yml", "r+") as myfile: # Working to modify specific portions
+        with open(DOMAIN_FILE, "r+") as myfile: # Working to modify specific portions
           contents = myfile.readlines()
           noforms = True #Initial logic to append files if the forms field is not being used
           for i, line2 in enumerate(contents):
