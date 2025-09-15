@@ -1,62 +1,170 @@
 # Archived Repository
 
-Thanks for your interest in Optum’s RasaUtilityTools project! Unfortunately, we have moved on and this project is no longer actively maintained or monitored by our Open Source Program Office. This copy is provided for reference only. Please fork the code if you are interested in further development. The project and all artifacts including code and documentation remain subject to use and reference under the terms and conditions of the open source license indicated. All copyrights reserved.
+Thanks for your interest in Optum's RasaUtilityTools project! Unfortunately, we have moved on and this project is no longer actively maintained or monitored by our Open Source Program Office. This copy is provided for reference only. Please fork the code if you are interested in further development. The project and all artifacts including code and documentation remain subject to use and reference under the terms and conditions of the open source license indicated. All copyrights reserved.
 
-# Rasa FAQ Bot CICD
+# RasaUtilityTools - Automated FAQ Chatbot Deployment
 
-Rasa FAQ Bot CICD
+An automated CI/CD system for maintaining synchronized FAQ content between Rasa-based chatbots and support websites. This tool establishes a single source of truth for FAQ data, eliminating manual maintenance across multiple systems.
 
-## What it is about 
+## 📋 Quick Start
 
-* Build an FAQ Support Chatbot
-* Build FAQ page for a suppport site
-* Automate the deployment of both
-* Single source of truth for team to maintain FAQ
+### Local Development
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-This repository is for an automated chatbot script that can be used to update both a team documentation support site FAQ and Rasa based support chatbot.  There will be one FAQ source of truth in the repository.  When updated, it will trigger a Jenkins build.  The Jenkins build will then update both the Rasa chatbot training files, build a new model, and activate that model.   It will also update the site support FAQ, so that both are kept in sync, and the support team only needs to maintain the FAQ in one place.
-
-It was determined there was a need for this so that developers supporting an application or platform could have one source of truth for adding and updating FAQs.  This source of truth could then populate a Rasa chatbot and support website, and keep them in sync.
-
-----------------
-### Usage
-
-The project has generic Rasa training files.  It is using Rasa 1.10.x. To use training data from an existing bot, put the training data into the correspoding Rasa training files without altering the order of the components for the script to work properly.  
-
-The master FAQ file that will be used to generate both Rasa training data and the web page source is newfaq.md.  Each FAQ should have the following format:
-
-### <main question>
-intent: <rasa_intent_name>
-answer: <answer>
-altquestion: <alternate way to ask question for rasa NLU training data>
-altquestion: <alternate way to ask question for rasa NLU training data>
-altquestion: <alternate way to ask question for rasa NLU training data>
-  
-Once ran, the script will generate the necessary rasa training files, as well as a faq.mdx file that can be used for the support web site source.
-
-The script can be ran locally with the instructions below.  A 'rasa train' would then also need to be done manually to generate the new Rasa model. The included jenkinsbuild file can be used to automate this process and upload the new model to a Rasa X instance, as well as trigger the web support site build.
-
-#### Requirements
-
-- Python3 (3.7)
-- Rasa (Rasa 1.10.x)
-- pandas (1.2.1)
-- For a detailed list of the libraries used for the Jenkins Rasa build refer to the included requirements.txt
-
-#### Running locally
-
+# Process FAQ content
 python ./chatscriptStandalone.py
 
-Our current setup utilizes Jenkins to automate the build.  The scripts and jenkinsfile are included here.  More information on integration git with Jenkins can be found here: https://www.jenkins.io/solutions/github/
+# Train Rasa model
+rasa train
+```
 
-#### The Pipeline
+### CI/CD Pipeline
+The Jenkins pipeline automatically processes FAQ changes, trains models, and deploys to both Rasa X and website repositories.
 
-A generic Jenkinsfile is included in this repsoitory, look for values in "<>" that should be replaced with your own.
+## 🏗️ System Architecture
 
-To run this, you should specify ./chatscriptJenkins.py in your Jenkinsfile. (As seen in the Jenkinsfile of this repo)
+**Single Source → Dual Outputs**
+- **Input**: `newfaq.md` (master FAQ file)
+- **Outputs**: Rasa training data + Web FAQ content
+- **Automation**: Jenkins CI/CD pipeline
+- **Deployment**: Rasa X + Website pull requests
 
-This works by creating a Python Jenkins workspace, where the chatbot script will be run to update your Rasa files. Then, using shell script, these values will be passed to the Rasa URL of your choice, as well as a GitHub repo (containing your FAQ) of your choice.
+## 📚 Documentation
 
+### Core Documentation
+- **[Architecture Overview](ARCHITECTURE.md)** - System design and component relationships
+- **[Workflow Guide](WORKFLOWS.md)** - Local development and CI/CD processes
+- **[FAQ Format Specification](FAQ_FORMAT.md)** - Master file format and processing rules
+- **[Setup Guide](SETUP.md)** - Environment configuration and deployment
+- **[Integrations](INTEGRATIONS.md)** - External system connections and APIs
+- **[Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
 
-![CICD Image](Chatbot-FAQ-CICD.png)
+### Quick Reference
+- **Technology Stack**: Python 3.7, Rasa 1.10.x, Jenkins, Conda
+- **Key Files**: `newfaq.md`, `chatscriptStandalone.py`, `jenkinsfile`
+- **Generated Outputs**: `data/nlu.md`, `data/stories.md`, `domain.yml`, `faq.mdx`
+
+## 🔄 FAQ Processing Workflow
+
+### Master FAQ Format (`newfaq.md`)
+```markdown
+### Does your framework use Rasa?
+intent: faq_rasa_support
+answer: Yes! Our framework was built with Rasa
+altquestion: What is the chatbot tool
+altquestion: do you use an NLU
+altquestion: Did you use rasa
+```
+
+### Generated Outputs
+- **Rasa Training Data**: NLU examples, conversation stories, domain configuration
+- **Web Content**: Formatted FAQ for website integration
+- **Model Deployment**: Automated training and Rasa X activation
+
+## 🚀 Execution Modes
+
+### 1. Local Development (`chatscriptStandalone.py`)
+- Interactive prompts for project configuration
+- Manual model training required
+- Ideal for testing and development
+
+### 2. CI/CD Automation (`chatscriptJenkins.py`)
+- Fully automated pipeline execution
+- Integrated model training and deployment
+- GitHub webhook triggered
+
+### 3. Core Processing (`chatscript.py`)
+- Non-interactive batch processing
+- Called by Jenkins pipeline
+- Optimized for automated environments
+
+## 🛠️ Requirements
+
+### Environment
+- **Python 3.7** (Required for Rasa 1.10.x compatibility)
+- **Rasa 1.10.x** (Conversational AI framework)
+- **pandas 1.2.1** (Data processing)
+- **Jenkins** (CI/CD automation)
+
+### Key Dependencies
+See `requirements.txt` for complete dependency list including TensorFlow 2.1.1, Rasa SDK 1.10.2, and supporting libraries.
+
+## 📊 CI/CD Pipeline
+
+### Pipeline Stages
+1. **Environment Setup** - Conda environment and dependency installation
+2. **FAQ Processing** - Parse `newfaq.md` and generate training files
+3. **Model Training** - Automated Rasa model training with versioning
+4. **Deployment** - Upload to Rasa X and activate as production
+5. **Website Integration** - Create pull request with updated FAQ content
+
+### Automation Features
+- GitHub webhook triggers on `newfaq.md` changes
+- Versioned model deployment to Rasa X
+- Automated website repository updates
+- Build status notifications and monitoring
+
+## 🔧 Configuration Files
+
+### Rasa Configuration
+- **`config.yml`** - Pipeline with TEDPolicy, DIETClassifier (100 epochs each)
+- **`domain.yml`** - Intents, responses, and actions (auto-updated)
+- **`data/nlu.md`** - Training examples (auto-generated)
+- **`data/stories.md`** - Conversation flows (auto-generated)
+
+### Integration Configuration
+- **`credentials.yml`** - Channel authentication (REST, Slack, Facebook)
+- **`endpoints.yml`** - External service endpoints (action server, tracker store)
+- **`jenkinsfile`** - Complete CI/CD pipeline definition
+
+## 🎯 Use Cases
+
+### Primary Users
+- **Support Teams**: Maintain FAQ content in single location
+- **Chatbot Developers**: Automated training data generation
+- **DevOps Teams**: Streamlined deployment pipeline
+- **Content Managers**: Synchronized web and bot content
+
+### Benefits
+- **Consistency**: Eliminates content drift between systems
+- **Efficiency**: Reduces manual maintenance overhead
+- **Automation**: End-to-end deployment pipeline
+- **Scalability**: Handles growing FAQ content seamlessly
+
+## 🔍 Monitoring and Maintenance
+
+### Health Checks
+- Processing success indicators (`working.txt`)
+- Generated file validation
+- Model deployment verification
+- API connectivity monitoring
+
+### Performance Optimization
+- Efficient file processing with duplicate detection
+- Configurable training parameters for development vs production
+- Resource management for model training
+- Caching strategies for CI/CD pipeline
+
+## 🆘 Support
+
+### Getting Help
+1. **Check Documentation**: Review comprehensive guides above
+2. **Troubleshooting Guide**: Common issues and solutions
+3. **Debug Information**: Use provided diagnostic scripts
+4. **Community Support**: Rasa community for framework-specific issues
+
+### Best Practices
+- Test FAQ changes locally before committing
+- Monitor Jenkins build logs for processing errors
+- Verify Rasa X model activation after deployment
+- Use version control for all configuration changes
+
+---
+
+**Original Project**: Automated chatbot script for synchronized FAQ management  
+**Technology**: Rasa 1.10.x, Python 3.7, Jenkins CI/CD  
+**Architecture**: Single source of truth → Dual output system
 
 
