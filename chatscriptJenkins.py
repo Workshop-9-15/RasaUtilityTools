@@ -4,6 +4,8 @@ import fileinput
 import os
 import codecs
 
+DOMAIN_FILE = "domain.yml"
+
 line_indexes = []
 
 # Specify if you've created a default rasa instance or not
@@ -12,7 +14,7 @@ rasainit = False
 
 if rasainit == True:
   print("Rasa init")
-  with open("domain.yml", "r+", encoding="utf-8") as myfile: # Working to modify specific portions 
+  with open(DOMAIN_FILE, "r+", encoding="utf-8") as myfile: # Working to modify specific portions 
     contents = myfile.readlines()
     lines = []
     for i, line2 in enumerate(contents):
@@ -50,7 +52,7 @@ with open("newfaq.md", encoding="utf-8") as file_in:
             myfile.write("\n" + "## intent:" + chatintent.replace(" ", "_"))
             myfile.write("- " + chatquestion) # This is working as expected, probably appending to the row below the latest
 
-        with open("domain.yml", "r+", encoding="utf-8") as myfile: 
+        with open(DOMAIN_FILE, "r+", encoding="utf-8") as myfile: 
           contents = myfile.readlines()
           for i, line2 in enumerate(contents):
             if "entities:" in line2 and "_entities:" not in line2 and chatintent not in contents[i - 1]:
@@ -75,7 +77,7 @@ with open("newfaq.md", encoding="utf-8") as file_in:
             myfile.write("\n" + answer2.rstrip())
 
        
-        with open("domain.yml", "r+", encoding="utf-8") as myfile:
+        with open(DOMAIN_FILE, "r+", encoding="utf-8") as myfile:
           contents = myfile.readlines()
           noforms = True 
           for i, line2 in enumerate(contents):
